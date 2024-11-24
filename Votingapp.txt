@@ -1,0 +1,155 @@
+import java.util.*;
+
+public class VotingApp {
+
+    static class Poll {
+        private int id;
+        private String question;
+        private Map<String, Integer> options;
+        private Set<String> voters;
+
+        public Poll(int id, String question, List<String> options) {
+            this.id = id;
+            this.question = question;
+            this.options = new LinkedHashMap<>();
+            this.voters = new HashSet<>();
+            for (String option : options) {
+                this.options.put(option, 0);
+            }
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public Map<String, Integer> getOptions() {
+            return options;
+        }
+
+        public boolean hasVoted(String userId) {
+            return voters.contains(userId);
+        }
+
+        public void vote(String userId, String option) {
+            if (!options.containsKey(option)) {
+                throw new IllegalArgumentException("Invalid option!");
+            }
+            if (hasVoted(userId)) {
+                throw new IllegalArgumentException("User has already voted on this poll!");
+            }
+            voters.add(userId);
+            options.put(option, options.get(option) + 1);
+        }
+
+        public void displayResults() {
+            int totalVotes = options.values().stream().mapToInt(Integer::intValue).sum();
+            System.out.println("Poll Question: " + question);
+            for (Map.Entry<String, Integer> entry : options.entrySet()) {
+                String option = entry.getKey();
+                int votes = entry.getValue();
+                double percentage = totalVotes == 0 ? 0 : (votes * 100.0 / totalVotes);
+                System.out.printf("%s: %d votes (%.2f%%)%n", option, votes, percentage);
+            }
+        }
+    }
+
+    static class VotingSystem {
+        private Map<Integer, Poll> polls = new HashMap<>();
+        private int nextPollId = 1;
+
+        public int createPoll(String question, List<String> options) {
+            Poll poll = new Poll(nextPollId, question, options);
+            polls.put(nextPollId, poll);
+            return nextPollId++;
+        }
+
+        public Poll getPoll(int id) {
+            if (!polls.containsKey(id)) {
+                throw new IllegalArgumentException("Poll not found!");
+            }
+            return polls.get(id);
+        }
+
+        public void vote(int pollId, String userId, String option) {
+            Poll poll = getPoll(pollId);
+            poll.vote(userId, option);
+        }
+
+        public void displayPollResults(int pollId) {
+            Poll poll = getPoll(pollId);
+            poll.displayResults();
+        }
+    }
+
+    public static void main(String[] args) {
+        VotingSystem votingSystem = new VotingSystem();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n--- Voting Application ---");
+            System.out.println("1. Create Poll");
+            System.out.println("2. Vote");
+            System.out.println("3. View Results");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            try {
+                switch (choice) {
+                    case 1 -> createPoll(scanner, votingSystem);
+                    case 2 -> castVote(scanner, votingSystem);
+                    case 3 -> viewResults(scanner, votingSystem);
+                    case 4 -> {
+                        System.out.println("Exiting... Goodbye!");
+                        return;
+                    }
+                    default -> System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void createPoll(Scanner scanner, VotingSystem votingSystem) {
+        System.out.print("Enter the poll question: ");
+        String question = scanner.nextLine();
+        System.out.print("Enter the number of options: ");
+        int optionCount = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        List<String> options = new ArrayList<>();
+        for (int i = 1; i <= optionCount; i++) {
+            System.out.print("Enter option " + i + ": ");
+            options.add(scanner.nextLine());
+        }
+
+        int pollId = votingSystem.createPoll(question, options);
+        System.out.println("Poll created successfully with ID: " + pollId);
+    }
+
+    private static void castVote(Scanner scanner, VotingSystem votingSystem) {
+        System.out.print("Enter Poll ID: ");
+        int pollId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        System.out.print("Enter User ID: ");
+        String userId = scanner.nextLine();
+        System.out.print("Enter your choice: ");
+        String choice = scanner.nextLine();
+
+        votingSystem.vote(pollId, userId, choice);
+        System.out.println("Vote cast successfully!");
+    }
+
+    private static void viewResults(Scanner scanner, VotingSystem votingSystem) {
+        System.out.print("Enter Poll ID: ");
+        int pollId = scanner.nextInt();
+
+        votingSystem.displayPollResults(pollId);
+    }
+}

@@ -1,0 +1,69 @@
+PS C:\Users\karun\Downloads\Library> cd "c:\Users\karun\Downloads\Library\" ; if ($?) { javac VotingApp.java } ; if ($?) { java VotingApp }
+
+--- Voting Application ---
+1. Create Poll
+2. Vote
+3. View Results
+4. Exit
+Enter your choice: 1
+Enter the poll question: what is prefered language 
+Enter the number of options: 3
+Enter option 1: java
+Enter option 2: python
+Enter option 3: c++
+Poll created successfully with ID: 1
+
+--- Voting Application ---
+1. Create Poll
+2. Vote
+3. View Results
+4. Exit
+Enter your choice: 2
+Enter Poll ID: 1
+Enter User ID: user2
+Enter your choice: java
+Vote cast successfully!
+
+--- Voting Application ---
+1. Create Poll
+2. Vote
+3. View Results
+4. Exit
+Enter your choice: 3
+Enter Poll ID: 1
+Poll Question: what is prefered language
+java: 1 votes (100.00%)
+python: 0 votes (0.00%)
+c++: 0 votes (0.00%)
+
+--- Voting Application ---
+1. Create Poll
+2. Vote
+3. View Results
+4. Exit
+Enter your choice: 2
+Enter Poll ID: 1
+Enter User ID: user1
+Enter your choice: c++
+Vote cast successfully!
+
+--- Voting Application ---
+1. Create Poll
+2. Vote
+3. View Results
+4. Exit
+Enter your choice: 3
+Enter Poll ID: 1
+Poll Question: what is prefered language
+java: 1 votes (50.00%)
+python: 0 votes (0.00%)
+c++: 1 votes (50.00%)
+
+--- Voting Application ---
+1. Create Poll
+2. Vote
+3. View Results
+4. Exit
+Enter your choice: 4
+Exiting... Goodbye!
+PS C:\Users\karun\Downloads\Library> 
